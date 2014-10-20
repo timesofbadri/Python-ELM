@@ -54,7 +54,7 @@ Label Legend:
   ELM(20,rbf(0.1))  :20 rbf units gamma=0.1
 
 """
-print __doc__
+print(__doc__)
 
 
 # Code source: Gael Varoqueux

@@ -17,7 +17,7 @@ from matplotlib.pyplot import plot, scatter, hist
 from numpy.ma import mean, std
 from sklearn.cluster import k_means
 import numpy as np
-from elm import ELMClassifier, ELMRegressor, GenELMClassifier, GenELMRegressor
+from elm import ELMRegressor, GenELMRegressor
 from random_layer import RandomLayer, MLPRandomLayer, RBFRandomLayer, GRBFRandomLayer
 
 # <codecell>
@@ -80,30 +80,8 @@ xtoy, ytoy = stdsc.fit_transform(xtoy), stdsc.fit_transform(ytoy)
 xtoy_train, xtoy_test, ytoy_train, ytoy_test = train_test_split(xtoy, ytoy, test_size=0.2)
 plot(xtoy, ytoy)
 
-# <codecell>
 
-# RBFRandomLayer tests
-for af in RandomLayer.activation_func_names():
-    print(af, end=' ')
-    elmc = ELMClassifier(activation_func=af)
-    tr, ts = res_dist(irx, iry, elmc, n_runs=200, random_state=0)
 
-# <codecell>
-
-elmc.classes_
-
-# <codecell>
-
-for af in RandomLayer.activation_func_names():
-    print(af)
-    elmc = ELMClassifier(activation_func=af, random_state=0)
-    tr, ts = res_dist(dgx, dgy, elmc, n_runs=100, random_state=0)
-
-# <codecell>
-
-elmc = ELMClassifier(n_hidden=500, activation_func='multiquadric')
-tr, ts = res_dist(dgx, dgy, elmc, n_runs=100, random_state=0)
-scatter(tr, ts, alpha=0.1, marker='D', c='r')
 
 # <codecell>
 
@@ -152,30 +130,7 @@ elmr.fit(xtoy_train, ytoy_train)
 print(elmr.score(xtoy_train, ytoy_train), elmr.score(xtoy_test, ytoy_test))
 plot(xtoy, ytoy, xtoy, elmr.predict(xtoy))
 
-# <codecell>
 
-rbf_rhl = RBFRandomLayer(n_hidden=100, random_state=0, rbf_width=0.01)
-elmc_rbf = GenELMClassifier(hidden_layer=rbf_rhl)
-elmc_rbf.fit(dgx_train, dgy_train)
-print(elmc_rbf.score(dgx_train, dgy_train), elmc_rbf.score(dgx_test, dgy_test))
-
-def powtanh_xfer(activations, power=1.0):
-    return pow(np.tanh(activations), power)
-
-tanh_rhl = MLPRandomLayer(n_hidden=100, activation_func=powtanh_xfer, activation_args={'power':3.0})
-elmc_tanh = GenELMClassifier(hidden_layer=tanh_rhl)
-elmc_tanh.fit(dgx_train, dgy_train)
-print(elmc_tanh.score(dgx_train, dgy_train), elmc_tanh.score(dgx_test, dgy_test))
-
-# <codecell>
-
-rbf_rhl = RBFRandomLayer(n_hidden=100, rbf_width=0.01)
-tr, ts = res_dist(dgx, dgy, GenELMClassifier(hidden_layer=rbf_rhl), n_runs=100, random_state=0)
-
-# <codecell>
-
-hist(ts), hist(tr)
-print
 
 # <codecell>
 
@@ -189,20 +144,6 @@ rhl = RBFRandomLayer(n_hidden=15, rbf_width=0.1)
 tr,ts = res_dist(dbx, dby, GenELMRegressor(rhl), n_runs=100, random_state=0)
 hist(tr), hist(ts)
 print
-
-# <codecell>
-
-elmc = ELMClassifier(n_hidden=1000, activation_func='gaussian', alpha=0.0, random_state=0)
-elmc.fit(dgx_train, dgy_train)
-print(elmc.score(dgx_train, dgy_train), elmc.score(dgx_test, dgy_test))
-
-# <codecell>
-
-elmc = ELMClassifier(n_hidden=500, activation_func='hardlim', alpha=1.0, random_state=0)
-elmc.fit(dgx_train, dgy_train)
-print(elmc.score(dgx_train, dgy_train), elmc.score(dgx_test, dgy_test))
-
-# <codecell>
 
 elmr = ELMRegressor(random_state=0)
 elmr.fit(xtoy_train, ytoy_train)
